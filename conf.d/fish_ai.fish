@@ -92,9 +92,9 @@ function python_version_check
         echo "Consider setting the environment variable 'FISH_AI_PYTHON_VERSION' to a supported version and reinstalling the plugin. For example:"
         set_color --italics blue
         echo ""
-        echo "  fisher remove realiserad/fish-ai"
+        echo "  fisher remove amadea-system/fish-ai"
         echo "  set -g FISH_AI_PYTHON_VERSION $supported_versions[-1]"
-        echo "  fisher install realiserad/fish-ai"
+        echo "  fisher install amadea-system/fish-ai"
         echo ""
         set_color normal
     end

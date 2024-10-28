@@ -10,7 +10,7 @@ for commit in $commits
     set commit_description (string split ': ' "$message_header" | sed -n 2p)
     set short_hash (git log --format=%h -n 1 $commit)
     set long_hash (git log --format=%H -n 1 $commit)
-    set commit_link "https://github.com/realiserad/fish-ai/commit/$long_hash"
+    set commit_link "https://github.com/amadea-system/fish-ai/commit/$long_hash"
     set message "$commit_description (in commit [`#$short_hash`]($commit_link))"
     if test "$commit_type" = fix || test "$commit_type" = "fix!"
         set -a fixes (echo -n $message)

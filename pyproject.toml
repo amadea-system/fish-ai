@@ -24,8 +24,8 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/realiserad/fish-ai"
-"Bug Tracker" = "https://github.com/realiserad/fish-ai/issues"
+"Homepage" = "https://github.com/amadea-system/fish-ai"
+"Bug Tracker" = "https://github.com/amadea-system/fish-ai/issues"
 
 [project.scripts]
 fix = "fish_ai.fix:fix"
