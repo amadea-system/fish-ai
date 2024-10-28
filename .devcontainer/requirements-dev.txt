@@ -5,11 +5,8 @@ pyfakefs
 mutatest
 
 openai
-google-generativeai
 simple-term-menu
 iterfzf
-hugchat
-mistralai
 binaryornot
 azure-ai-inference
 anthropic

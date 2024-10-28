@@ -2,8 +2,8 @@
 
 from openai import OpenAI
 from openai import AzureOpenAI
-import google.generativeai as genai
-from google.generativeai.types import GenerationConfig
+# import google.generativeai as genai
+# from google.generativeai.types import GenerationConfig
 from os.path import isfile
 import platform
 import logging
@@ -12,9 +12,9 @@ from time import time_ns
 import subprocess
 import textwrap
 import sys
-from hugchat import hugchat
-from hugchat.login import Login
-from mistralai import Mistral
+# from hugchat import hugchat
+# from hugchat.login import Login
+# from mistralai import Mistral
 from fish_ai.redact import redact
 import itertools
 from azure.ai.inference import ChatCompletionsClient
@@ -177,32 +177,32 @@ def get_openai_client():
                         .format(get_config('provider')))
 
 
-def get_messages_for_gemini(messages):
-    """
-    Create message history which can be used with Gemini.
-    Google uses a different chat history format than OpenAI.
-    The message content should be put in a parts array and
-    system messages are not supported.
-    """
-    outputs = []
-    system_messages = []
-    for message in messages:
-        if message.get('role') == 'system':
-            system_messages.append(message.get('content'))
-    for i in range(len(messages) - 1):
-        message = messages[i]
-        if message.get('role') == 'user':
-            outputs.append({
-                'role': 'user',
-                'parts': system_messages + [message.get('content')] if i == 0
-                else [message.get('content')]
-            })
-        elif message.get('role') == 'assistant':
-            outputs.append({
-                'role': 'model',
-                'parts': [message.get('content')]
-            })
-    return outputs
+# def get_messages_for_gemini(messages):
+#     """
+#     Create message history which can be used with Gemini.
+#     Google uses a different chat history format than OpenAI.
+#     The message content should be put in a parts array and
+#     system messages are not supported.
+#     """
+#     outputs = []
+#     system_messages = []
+#     for message in messages:
+#         if message.get('role') == 'system':
+#             system_messages.append(message.get('content'))
+#     for i in range(len(messages) - 1):
+#         message = messages[i]
+#         if message.get('role') == 'user':
+#             outputs.append({
+#                 'role': 'user',
+#                 'parts': system_messages + [message.get('content')] if i == 0
+#                 else [message.get('content')]
+#             })
+#         elif message.get('role') == 'assistant':
+#             outputs.append({
+#                 'role': 'model',
+#                 'parts': [message.get('content')]
+#             })
+    # return outputs
 
 
 def get_messages_for_anthropic(messages):
@@ -236,46 +236,47 @@ def get_response(messages):
 
     start_time = time_ns()
 
-    if get_config('provider') == 'google':
-        genai.configure(api_key=get_config('api_key'))
-        model = genai.GenerativeModel(
-            get_config('model') or 'gemini-1.5-flash')
-        chat = model.start_chat(history=get_messages_for_gemini(messages))
-        generation_config = GenerationConfig(
-            candidate_count=1,
-            temperature=float(get_config('temperature') or '0.2'))
-        response = (chat.send_message(generation_config=generation_config,
-                                      content=messages[-1].get('content'),
-                                      stream=False)
-                    .text.strip(' `'))
-    elif get_config('provider') == 'huggingface':
-        email = get_config('email')
-        password = get_config('password')
-        cookies = Login(email, password).login(
-            cookie_dir_path=path.expanduser('~/.fish-ai/cookies/'),
-            save_cookies=True)
+    # if get_config('provider') == 'google':
+    #     genai.configure(api_key=get_config('api_key'))
+    #     model = genai.GenerativeModel(
+    #         get_config('model') or 'gemini-1.5-flash')
+    #     chat = model.start_chat(history=get_messages_for_gemini(messages))
+    #     generation_config = GenerationConfig(
+    #         candidate_count=1,
+    #         temperature=float(get_config('temperature') or '0.2'))
+    #     response = (chat.send_message(generation_config=generation_config,
+    #                                   content=messages[-1].get('content'),
+    #                                   stream=False)
+    #                 .text.strip(' `'))
+    # elif get_config('provider') == 'huggingface':
+    #     email = get_config('email')
+    #     password = get_config('password')
+    #     cookies = Login(email, password).login(
+    #         cookie_dir_path=path.expanduser('~/.fish-ai/cookies/'),
+    #         save_cookies=True)
 
-        bot = hugchat.ChatBot(
-            cookies=cookies.get_dict(),
-            system_prompt=create_system_prompt(messages),
-            default_llm=get_config('model') or
-            'meta-llama/Meta-Llama-3.1-70B-Instruct')
+    #     bot = hugchat.ChatBot(
+    #         cookies=cookies.get_dict(),
+    #         system_prompt=create_system_prompt(messages),
+    #         default_llm=get_config('model') or
+    #         'meta-llama/Meta-Llama-3.1-70B-Instruct')
 
-        response = bot.chat(
-            messages[-1].get('content')).wait_until_done().strip(' `')
-        bot.delete_conversation(bot.get_conversation_info())
-    elif get_config('provider') == 'mistral':
-        client = Mistral(
-            api_key=get_config('api_key')
-        )
-        completions = client.chat.complete(
-            model=get_config('model') or 'mistral-large-latest',
-            messages=messages,
-            max_tokens=1024,
-            temperature=float(get_config('temperature') or '0.2'),
-        )
-        response = completions.choices[0].message.content.strip(' `')
-    elif get_config('provider') == 'github':
+    #     response = bot.chat(
+    #         messages[-1].get('content')).wait_until_done().strip(' `')
+    #     bot.delete_conversation(bot.get_conversation_info())
+    # elif get_config('provider') == 'mistral':
+        # client = Mistral(
+        #     api_key=get_config('api_key')
+        # )
+        # completions = client.chat.complete(
+        #     model=get_config('model') or 'mistral-large-latest',
+        #     messages=messages,
+        #     max_tokens=1024,
+        #     temperature=float(get_config('temperature') or '0.2'),
+        # )
+        # response = completions.choices[0].message.content.strip(' `')
+    # elif get_config('provider') == 'github':
+    if get_config('provider') == 'github':
         client = ChatCompletionsClient(
             endpoint='https://models.inference.ai.azure.com',
             credential=AzureKeyCredential(get_config('api_key')),
